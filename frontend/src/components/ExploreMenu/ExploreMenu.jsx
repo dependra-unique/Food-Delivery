@@ -16,7 +16,7 @@ function ExploreMenu({category, setCategory}) {
                     key={index}
                     className='explore-menu-list-item'>
                         <img
-                        onClick={category === item.menu_name ? "active" : ""} 
+                        className={category === item.menu_name ? "active" : ""} 
                         src={item.menu_image} alt="" 
                         />
                         <p>{item.menu_name}</p>
