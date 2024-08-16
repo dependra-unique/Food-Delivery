@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import './LoginPopup.css'
 import { assets } from '../../assets/assets'
+import { StoreContext } from '../../context/StoreContext'
+import axios from 'axios'
 
 function LoginPopup({setShowLogin}) {
+
+        const {url, setToken} = useContext(StoreContext)
 
         const [currentState, setCurrentState] = useState("Login")
 
@@ -20,14 +24,34 @@ function LoginPopup({setShowLogin}) {
 
         }
 
-        useEffect(()=> {
-            console.log(data);
+        // useEffect(()=> {
+        //     console.log(data);
             
-        }, [data])
+        // }, [data])
+
+        const onLogin = async (e) => {
+            e.preventDefault();
+
+            let newUrl = url;
+            if(currentState === "Login"){
+                newUrl += '/api/user/login'
+            } else {
+                newUrl += '/api/user/register'
+            }
+
+            const response = await axios.post(newUrl, data);
+            if(response.data.success){
+                setToken(response.data.token);
+                localStorage.setItem("token", response.data.token);
+                setShowLogin(false);
+            } else {
+                alert(response.data.message);
+            }
+        }
 
   return (
     <div className='login-popup'>
-        <form className="login-popup-container">
+        <form onSubmit={onLogin} className="login-popup-container">
             <div className="login-popup-title">
                 <h2>{currentState}</h2>
                 <img 
@@ -39,7 +63,7 @@ function LoginPopup({setShowLogin}) {
                 <input name='email' onChange={onChangeHandler} value={data.email} type='email' placeholder='Your email' required/>
                 <input name='password' onChange={onChangeHandler} value={data.password} type='password' placeholder='password' required/>
             </div>
-            <button>
+            <button type='submit'>
                 {currentState === "Sign up" ? "Create account" : "Login"}
             </button>
             <div className="login-popup-condition">
