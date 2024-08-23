@@ -15,7 +15,7 @@ const placeOrder = async (req, res) => {
             userId: req.body.userId,
             items: req.body.items,
             amount: req.body.amount,
-            address: req.body.amount
+            address: req.body.address
         })
         await newOrder.save();
         await userModel.findByIdAndUpdate(req.body.userId, {cartData:{}});
@@ -23,7 +23,7 @@ const placeOrder = async (req, res) => {
         //create link for payment
         const line_items = req.body.items.map((item) => ({
             price_data: {
-                currency: "inr",
+                currency: "usd",
                 product_data:{
                     name: item.name
                 },
@@ -34,7 +34,7 @@ const placeOrder = async (req, res) => {
 
         line_items.push({
             price_data: {
-                currency: "inr",
+                currency: "usd",
                 product_data: {
                     name: "Delivery Charges"
                 },
